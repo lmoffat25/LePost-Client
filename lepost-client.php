@@ -37,7 +37,7 @@ require_once LEPOST_CLIENT_PLUGIN_DIR . 'lib/plugin-update-checker/plugin-update
 use YahnisElsts\PluginUpdateChecker\v5p5\PucFactory;
 
 $updateChecker = PucFactory::buildUpdateChecker(
-    'https://github.com/lepost/lepost-client', // URL de votre dépôt GitHub
+    'https://github.com/lmoffat25/LePost-Client', // URL de votre dépôt GitHub
     __FILE__,
     'lepost-client'
 );
