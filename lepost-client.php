@@ -11,7 +11,7 @@
  * Plugin Name:       LePost Client
  * Plugin URI:        https://lepost.ai
  * Description:       Plugin client pour l'API LePost, générateur d'idées d'articles et d'articles.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            LePost
  * Author URI:        https://lepost.ai
  * Text Domain:       lepost-client
@@ -26,7 +26,7 @@ if (!defined('WPINC')) {
 }
 
 // Définir les constantes du plugin
-define('LEPOST_CLIENT_VERSION', '1.0.0');
+define('LEPOST_CLIENT_VERSION', '1.0.1');
 define('LEPOST_CLIENT_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('LEPOST_CLIENT_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('LEPOST_CLIENT_PLUGIN_BASENAME', plugin_basename(__FILE__));
