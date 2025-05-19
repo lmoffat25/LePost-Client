@@ -1,0 +1,654 @@
+/**
+ * Styles pour l'administration du plugin LePost Client
+ */
+
+/* Structure générale */
+.lepost-admin-container {
+    margin: 20px 0;
+    max-width: 1200px;
+}
+
+.lepost-admin-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.lepost-admin-logo {
+    width: 50px;
+    height: auto;
+    margin-right: 15px;
+}
+
+.lepost-admin-title {
+    margin: 0;
+    color: #23282d;
+    font-size: 23px;
+    font-weight: 400;
+}
+
+/* Messages de notification */
+.lepost-admin-notice {
+    background: #fff;
+    border-left: 4px solid #dc3232;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+    margin: 20px 0;
+    padding: 12px;
+}
+
+.lepost-admin-notice.lepost-notice-warning {
+    border-left-color: #ffb900;
+}
+
+.lepost-admin-notice.lepost-notice-info {
+    border-left-color: #00a0d2;
+}
+
+.lepost-admin-notice.lepost-notice-success {
+    border-left-color: #46b450;
+}
+
+.lepost-admin-notice p {
+    margin: 0.5em 0;
+    padding: 2px;
+}
+
+/* Navigation par onglets */
+.lepost-admin-tabs {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+.lepost-admin-tabs .nav-tab {
+    margin-left: 0;
+    margin-right: 0.5em;
+}
+
+.lepost-admin-tabs .nav-tab-active {
+    background: #fff;
+    border-bottom: 1px solid #fff;
+}
+
+/* Structure des sections */
+.lepost-admin-section {
+    margin: 20px 0;
+}
+
+.lepost-admin-section-header {
+    margin-bottom: 20px;
+}
+
+.lepost-admin-section-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.lepost-admin-section-description {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Cartes */
+.lepost-admin-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+.lepost-admin-card h3 {
+    border-bottom: 1px solid #eee;
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+}
+
+/* Formulaires */
+.lepost-admin-form {
+    margin-bottom: 20px;
+}
+
+.lepost-admin-form-group {
+    margin-bottom: 15px;
+}
+
+.lepost-admin-form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.lepost-admin-form-group .description {
+    color: #666;
+    font-style: italic;
+    margin-top: 5px;
+}
+
+.lepost-admin-form-group input[type="text"],
+.lepost-admin-form-group input[type="password"],
+.lepost-admin-form-group textarea,
+.lepost-admin-form-group select {
+    width: 100%;
+}
+
+/* Tableaux */
+.lepost-admin-table-container {
+    margin-bottom: 20px;
+    overflow-x: auto;
+}
+
+.lepost-admin-table {
+    border-collapse: collapse;
+    margin-top: 15px;
+    width: 100%;
+}
+
+.lepost-admin-table th,
+.lepost-admin-table td {
+    border-bottom: 1px solid #eee;
+    padding: 10px;
+    text-align: left;
+}
+
+.lepost-admin-table th {
+    font-weight: 600;
+}
+
+.lepost-admin-pagination {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.lepost-admin-pagination .page-numbers {
+    display: inline-block;
+    min-width: 28px;
+    padding: 0 5px;
+    text-align: center;
+}
+
+/* Badges de statut */
+.lepost-status-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+}
+
+.lepost-status-draft {
+    background-color: #999;
+}
+
+.lepost-status-pending {
+    background-color: #ffba00;
+}
+
+.lepost-status-approved {
+    background-color: #46b450;
+}
+
+.lepost-status-completed {
+    background-color: #0073aa;
+}
+
+/* Messages de formulaire */
+.lepost-admin-message {
+    background: #f8f8f8;
+    border-left: 4px solid #46b450;
+    margin: 15px 0;
+    padding: 10px 15px;
+}
+
+.lepost-admin-message.error {
+    border-left-color: #dc3232;
+}
+
+/* Actions */
+.lepost-admin-actions {
+    margin-top: 15px;
+}
+
+.lepost-admin-actions .spinner {
+    float: none;
+    vertical-align: middle;
+}
+
+/* État vide */
+.lepost-admin-empty-state {
+    background: #f9f9f9;
+    border: 1px dashed #ddd;
+    border-radius: 3px;
+    margin: 15px 0;
+    padding: 30px;
+    text-align: center;
+}
+
+.lepost-admin-empty-icon {
+    margin-bottom: 15px;
+}
+
+.lepost-admin-empty-icon .dashicons {
+    color: #ddd;
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+}
+
+.lepost-admin-empty-state h4 {
+    font-size: 18px;
+    margin: 0 0 10px;
+}
+
+.lepost-admin-empty-state p {
+    color: #666;
+    margin: 0 0 15px;
+}
+
+/* Footer */
+.lepost-admin-footer {
+    margin-top: 30px;
+    padding-top: 10px;
+    border-top: 1px solid #ccc;
+    color: #666;
+    font-size: 12px;
+}
+
+.lepost-admin-footer a {
+    text-decoration: none;
+}
+
+/* Responsive */
+@media screen and (max-width: 782px) {
+    .lepost-admin-tabs .nav-tab {
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+    
+    .lepost-admin-form-group input[type="text"],
+    .lepost-admin-form-group input[type="password"],
+    .lepost-admin-form-group input[type="email"],
+    .lepost-admin-form-group input[type="number"],
+    .lepost-admin-form-group textarea,
+    .lepost-admin-form-group select {
+        max-width: 100%;
+    }
+
+    .lepost-dashboard-cards {
+        flex-direction: column;
+    }
+    
+    .lepost-dashboard-card {
+        width: 100%;
+    }
+    
+    .lepost-flex-column {
+        flex: none;
+        width: 100%;
+    }
+} 
+
+
+.lepost-idee-description {
+    max-width: 300px;
+}
+
+.lepost-idee-description .lepost-voir-plus {
+    color: #0073aa;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.lepost-tag {
+    display: inline-block;
+    background: #f1f1f1;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.lepost-status-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+}
+
+.lepost-count-badge {
+    display: inline-block;
+    background-color: #0073aa;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    text-align: center;
+    line-height: 24px;
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+.lepost-admin-form-inline {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.lepost-admin-form-inline .lepost-admin-form-group {
+    margin-right: 15px;
+    margin-bottom: 0;
+}
+
+.lepost-admin-form-help {
+    font-size: 11px;
+    color: #666;
+    font-weight: normal;
+    margin-left: 5px;
+}
+
+.lepost-admin-empty-state {
+    text-align: center;
+    padding: 40px 0;
+    color: #666;
+}
+
+.lepost-admin-empty-icon {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.lepost-admin-empty-icon .dashicons {
+    width: 48px;
+    height: 48px;
+    font-size: 48px;
+}
+
+/* Modal */
+.lepost-modal {
+    background-color: rgba(0,0,0,0.5);
+    display: none;
+    height: 100%;
+    left: 0;
+    overflow: auto;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.lepost-modal-content {
+    background-color: #fff;
+    border-radius: 3px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    margin: 100px auto;
+    max-width: 800px;
+    padding: 20px;
+    position: relative;
+    width: 80%;
+}
+
+.lepost-modal-close {
+    color: #aaa;
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+    position: absolute;
+    right: 20px;
+    top: 10px;
+}
+
+.lepost-modal-close:hover,
+.lepost-modal-close:focus {
+    color: #000;
+    text-decoration: none;
+}
+
+#lepost-modal-description {
+    margin-bottom: 20px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+    background-color: #f8f8f8;
+    border-radius: 4px;
+}
+
+.lepost-modal-mots-cles {
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.lepost-tooltip {
+    cursor: help;
+    vertical-align: middle;
+}
+
+.lepost-hr {
+    border: 0;
+    height: 1px;
+    background: #ddd;
+    margin: 30px 0;
+}
+
+.lepost-admin-subsection-title {
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.lepost-import-form {
+    margin-top: 10px;
+}
+
+.lepost-flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.lepost-flex-column {
+    flex: 1;
+    min-width: 300px;
+}
+
+.lepost-flex-main {
+    flex: 2;
+}
+
+.lepost-flex-side {
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 3px;
+    padding: 15px;
+}
+
+.lepost-file-upload-wrapper {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+}
+
+.lepost-file-upload-info {
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    flex: 1;
+    padding: 5px 10px;
+}
+
+.lepost-generation-info {
+    margin-top: 10px;
+    color: #666;
+    font-style: italic;
+}
+
+.description {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.lepost-admin-form-group {
+    margin-bottom: 20px;
+}
+
+/* Style pour le tableau de bord */
+.lepost-dashboard-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.lepost-dashboard-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    display: flex;
+    flex: 1;
+    min-width: 200px;
+    padding: 15px;
+    position: relative;
+}
+
+.lepost-dashboard-card-icon {
+    align-items: center;
+    background: #f9f9f9;
+    border-radius: 50%;
+    display: flex;
+    height: 50px;
+    justify-content: center;
+    margin-right: 15px;
+    width: 50px;
+}
+
+.lepost-dashboard-card-icon .dashicons {
+    color: #0073aa;
+    font-size: 24px;
+    height: 24px;
+    width: 24px;
+}
+
+.lepost-dashboard-card-content {
+    flex: 1;
+}
+
+.lepost-dashboard-card-value {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.lepost-dashboard-card-label {
+    color: #666;
+    font-size: 14px;
+}
+
+.lepost-dashboard-card-action {
+    align-items: center;
+    display: flex;
+    margin-left: 10px;
+}
+
+.lepost-dashboard-card-action .dashicons {
+    color: #0073aa;
+}
+
+/* Style pour le tableau de bord - crédits */
+.lepost-credits-refresh {
+    color: #999;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.lepost-refresh-credits {
+    color: #0073aa;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.lepost-credits-debug {
+    font-size: 10px;
+    margin-top: 10px;
+    max-height: 200px;
+    overflow: auto;
+}
+
+.lepost-credits-debug pre {
+    margin: 0;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+
+/* Style pour le lien "Voir plus" */
+.lepost-voir-plus {
+    color: #0073aa;
+    cursor: pointer;
+}
+
+/* Style pour le menu des paramètres */
+.lepost-settings-menu {
+    margin-bottom: 20px;
+}
+
+.lepost-settings-menu li {
+    display: inline-block;
+    margin: 0;
+}
+
+.lepost-settings-menu a {
+    background: #f1f1f1;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-radius: 3px 3px 0 0;
+    color: #555;
+    display: block;
+    padding: 8px 12px;
+    text-decoration: none;
+}
+
+.lepost-settings-menu a:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+.lepost-settings-menu a.active {
+    background: #fff;
+    border-bottom: 1px solid #fff;
+    color: #0073aa;
+    margin-bottom: -1px;
+    position: relative;
+}
+
+.lepost-settings-menu a .dashicons {
+    font-size: 16px;
+    height: 16px;
+    margin-right: 5px;
+    vertical-align: text-bottom;
+    width: 16px;
+}
+
+/* Styles pour le contenu généré */
+.lepost-generated-content {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-top: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 15px;
+    white-space: pre-line;
+}
+
+.lepost-generation-info {
+    color: #666;
+    font-style: italic;
+    margin-top: 10px;
+}

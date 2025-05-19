@@ -1,0 +1,117 @@
+/**
+ * Styles pour les onglets des paramètres LePost Client
+ */
+
+.lepost-loader {
+    float: none;
+    visibility: hidden;
+}
+
+.lepost-hidden {
+    display: none;
+}
+
+/* Ajustements potentiels pour les éléments .spinner de WordPress */
+.lepost-settings-content .spinner.lepost-loader {
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+.lepost-api-test-result,
+.lepost-test-result {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ccd0d4;
+    background-color: #f8f9fa;
+}
+
+.lepost-article-preview {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px dashed #ccd0d4;
+    background-color: #fff;
+    white-space: pre-wrap; /* Pour conserver les sauts de ligne et espaces */
+}
+
+/* Styles from tab-settings.php */
+.lepost-settings-tabs {
+    margin-top: 20px;
+}
+
+.lepost-settings-nav {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+.lepost-settings-nav .nav-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 15px;
+    margin: 0 2px -1px 0;
+    border: 1px solid #ccc;
+    background: #f1f1f1;
+    color: #555;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 3px 3px 0 0;
+}
+
+.lepost-settings-nav .nav-tab-active {
+    background: #fff;
+    border-bottom-color: #fff;
+    color: #2271b1;
+}
+
+.lepost-settings-content {
+    padding: 20px 0; /* Maintained from original */
+}
+
+/* .lepost-test-result was already defined, ensuring consistency or merging if needed */
+/* The new .lepost-test-result from tab-settings.php is slightly different.
+   Original: margin-top: 10px; padding: 10px; border: 1px solid #ccd0d4; background-color: #f8f9fa;
+   New: margin-top: 20px; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 3px;
+   I will use the new one as it's more specific to the settings page context. */
+.lepost-test-result {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+
+/* .lepost-article-preview was already defined, ensuring consistency or merging if needed */
+/* Original: max-height: 300px; overflow-y: auto; padding: 10px; border: 1px dashed #ccd0d4; background-color: #fff; white-space: pre-wrap; */
+/* New: padding: 15px; background: #fff; border: 1px solid #eee; border-radius: 3px; */
+/* I will merge these, taking new padding, border, and radius but keeping max-height and overflow. */
+.lepost-article-preview {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 15px; /* New */
+    border: 1px solid #eee; /* New */
+    background-color: #fff;
+    white-space: pre-wrap;
+    border-radius: 3px; /* New */
+}
+
+
+/* .lepost-api-test-result was already defined. New one is very similar. */
+/* Original: margin-top: 10px; padding: 10px; border: 1px solid #ccd0d4; background-color: #f8f9fa; */
+/* New: display: inline-block; margin-left: 10px; line-height: 30px; vertical-align: middle; */
+/* These are different aspects. I will combine them if they don't conflict or make sense together. */
+.lepost-api-test-result {
+    display: inline-block; /* New */
+    margin-left: 10px; /* New */
+    line-height: 30px; /* New */
+    vertical-align: middle; /* New */
+    margin-top: 10px; /* Original */
+    padding: 10px; /* Original - might be too much with line-height */
+    border: 1px solid #ccd0d4; /* Original */
+    background-color: #f8f9fa; /* Original */
+}
+
+.lepost-warning-text {
+    color: #d63638;
+} 
