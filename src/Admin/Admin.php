@@ -357,6 +357,12 @@ class Admin {
             $sanitized['default_category'] = (int) $input['default_category'];
         }
         
+        // Option de mise à jour automatique
+        if (isset($input['enable_auto_updates'])) {
+            $sanitized['enable_auto_updates'] = $input['enable_auto_updates'] ? '1' : '0';
+        } else {
+            $sanitized['enable_auto_updates'] = '0';
+        }
         
         return $sanitized;
     }
