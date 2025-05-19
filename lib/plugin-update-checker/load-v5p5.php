@@ -5,11 +5,11 @@ namespace YahnisElsts\PluginUpdateChecker\v5p5;
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory as MajorFactory;
 use YahnisElsts\PluginUpdateChecker\v5p5\PucFactory as MinorFactory;
 
-require __DIR__ . '/Puc/v5p5/Autoloader.php';
+require __DIR__ . '/v5p5/Autoloader.php';
 new Autoloader();
 
-require __DIR__ . '/Puc/v5p5/PucFactory.php';
-require __DIR__ . '/Puc/v5/PucFactory.php';
+require __DIR__ . '/v5p5/PucFactory.php';
+require __DIR__ . '/v5/PucFactory.php';
 
 //Register classes defined in this version with the factory.
 foreach (
