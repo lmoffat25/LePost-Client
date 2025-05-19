@@ -92,17 +92,29 @@ class Activator {
             add_option('lepost_client_api_url', 'https://dev-wordpress.agence-web-prism.fr');
         }
         
+        // Option pour les mises à jour automatiques
+        if (!get_option('lepost_client_auto_update')) {
+            add_option('lepost_client_auto_update', false);
+        }
+        
         // Autres options par défaut...
         if (!get_option('lepost_client_settings')) {
             add_option('lepost_client_settings', [
                 'autopost_articles' => true,  // Toujours activé
                 'default_category' => 1,
-                'default_status' => 'draft'
+                'default_status' => 'draft',
+                'enable_auto_updates' => '0'
             ]);
         } else {
             // Force la mise à jour des paramètres existants
             $current_settings = get_option('lepost_client_settings', []);
             $current_settings['autopost_articles'] = true;
+            
+            // Assurer que le paramètre enable_auto_updates existe
+            if (!isset($current_settings['enable_auto_updates'])) {
+                $current_settings['enable_auto_updates'] = '0';
+            }
+            
             update_option('lepost_client_settings', $current_settings);
             error_log('LePost Activator: Paramètres mis à jour pour activer autopost_articles');
         }
