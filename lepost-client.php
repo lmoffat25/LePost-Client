@@ -25,6 +25,10 @@ if (!defined('WPINC')) {
     die;
 }
 
+// Charger la bibliothèque de mise à jour
+require_once __DIR__ . '/includes/plugin-update-checker/plugin-update-checker.php';
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
 // Définir les constantes du plugin
 define('LEPOST_CLIENT_VERSION', '1.0.0');
 define('LEPOST_CLIENT_PLUGIN_DIR', plugin_dir_path(__FILE__));
@@ -32,19 +36,14 @@ define('LEPOST_CLIENT_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('LEPOST_CLIENT_PLUGIN_BASENAME', plugin_basename(__FILE__));
 define('LEPOST_API_BASE_URL', 'https://dev-wordpress.agence-web-prism.fr');
 
-// Intégration de la gestion des mises à jour
-require_once LEPOST_CLIENT_PLUGIN_DIR . 'lib/plugin-update-checker/plugin-update-checker.php';
-use YahnisElsts\PluginUpdateChecker\v5p5\PucFactory;
-
+// Initialiser le checker sur GitHub
 $updateChecker = PucFactory::buildUpdateChecker(
-    'https://github.com/lmoffat25/LePost-Client', // URL de votre dépôt GitHub
+    'https://github.com/lmoffat25/LePost-Client/',
     __FILE__,
     'lepost-client'
 );
-
-// Optionnel : Configuration des mises à jour
-$updateChecker->setBranch('main'); // Branche à surveiller
-$updateChecker->getVcsApi()->enableReleaseAssets(); // Activer les assets de release
+$updateChecker->setBranch('main');
+$updateChecker->getVcsApi()->enableReleaseAssets();
 
 // Autoloader pour les classes du plugin
 spl_autoload_register(function ($class) {
@@ -79,6 +78,14 @@ register_deactivation_hook(__FILE__, function() {
     require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Core/Deactivator.php';
     LePostClient\Core\Deactivator::deactivate();
 });
+
+// Contrôler les mises à jour automatiques
+add_filter('auto_update_plugin', function($update, $item) {
+    if ($item->plugin === plugin_basename(__FILE__)) {
+        return (bool) get_option('lepost_client_auto_update', false);
+    }
+    return $update;
+}, 10, 2);
 
 // Démarrer le plugin
 require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Core/Plugin.php';
