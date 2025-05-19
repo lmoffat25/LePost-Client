@@ -54,6 +54,10 @@ if (!defined('ABSPATH')) {
             <input type="checkbox" name="lepost_client_settings[enable_auto_updates]" value="1" <?php checked(isset($settings['enable_auto_updates']) ? $settings['enable_auto_updates'] : '0', '1'); ?> />
             <?php esc_html_e('Activer les mises à jour automatiques du plugin', 'lepost-client'); ?>
         </label>
-        <p class="description"><?php esc_html_e('Lorsque cette option est activée, le plugin sera automatiquement mis à jour dès qu\'une nouvelle version est disponible.', 'lepost-client'); ?></p>
+        <p class="description">
+            <?php esc_html_e('Lorsque cette option est activée, le plugin sera automatiquement mis à jour dès qu\'une nouvelle version est disponible.', 'lepost-client'); ?>
+            <br>
+            <?php esc_html_e('Cette option est synchronisée avec le système de mises à jour automatiques de WordPress, visible dans la liste des plugins.', 'lepost-client'); ?>
+        </p>
     </div>
 </div> 

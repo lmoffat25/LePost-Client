@@ -46,65 +46,51 @@ $updateChecker = PucFactory::buildUpdateChecker(
 $updateChecker->setBranch('main'); // Branche à surveiller
 $updateChecker->getVcsApi()->enableReleaseAssets(); // Activer les assets de release
 
-// Contrôler les mises à jour automatiques
-add_filter('auto_update_plugin', function($update, $item) {
-    if ($item->plugin === plugin_basename(__FILE__)) {
-        return (bool) get_option('lepost_client_auto_update', false);
+// Synchroniser notre paramètre avec le système natif de WordPress
+add_action('admin_init', function() {
+    // Le chemin du plugin à mettre à jour
+    $plugin_path = plugin_basename(__FILE__);
+    
+    // Récupérer notre paramètre
+    $enable_auto_updates = get_option('lepost_client_settings', [])['enable_auto_updates'] ?? '0';
+    
+    // Récupérer la liste des plugins à mettre à jour automatiquement
+    $auto_updates = (array) get_site_option('auto_update_plugins', []);
+    
+    // Si les mises à jour auto sont activées dans nos paramètres mais pas dans WordPress
+    if ($enable_auto_updates === '1' && !in_array($plugin_path, $auto_updates)) {
+        $auto_updates[] = $plugin_path;
+        update_site_option('auto_update_plugins', $auto_updates);
     }
-    return $update;
+    // Si les mises à jour auto sont désactivées dans nos paramètres mais activées dans WordPress
+    elseif ($enable_auto_updates === '0' && in_array($plugin_path, $auto_updates)) {
+        $auto_updates = array_diff($auto_updates, [$plugin_path]);
+        update_site_option('auto_update_plugins', $auto_updates);
+    }
+});
+
+// Synchroniser le système natif de WordPress avec notre paramètre
+add_action('update_option_auto_update_plugins', function($old_value, $new_value) {
+    $plugin_path = plugin_basename(__FILE__);
+    $settings = get_option('lepost_client_settings', []);
+    
+    // Si le plugin a été ajouté à la liste des mises à jour auto
+    if (!in_array($plugin_path, (array)$old_value) && in_array($plugin_path, (array)$new_value)) {
+        $settings['enable_auto_updates'] = '1';
+        update_option('lepost_client_settings', $settings);
+    }
+    // Si le plugin a été retiré de la liste des mises à jour auto
+    elseif (in_array($plugin_path, (array)$old_value) && !in_array($plugin_path, (array)$new_value)) {
+        $settings['enable_auto_updates'] = '0';
+        update_option('lepost_client_settings', $settings);
+    }
 }, 10, 2);
 
-// Activer/désactiver les mises à jour automatiques depuis la page des plugins
+// Ajouter un lien vers les paramètres dans la liste des plugins
 add_filter('plugin_action_links_' . plugin_basename(__FILE__), function($links) {
-    // Récupérer l'état actuel de l'option
-    $auto_updates_enabled = (bool) get_option('lepost_client_auto_update', false);
-    
-    // Ajouter un lien vers les paramètres
     $settings_link = '<a href="' . admin_url('admin.php?page=lepost-client&tab=settings') . '">' . __('Paramètres', 'lepost-client') . '</a>';
     array_unshift($links, $settings_link);
-    
     return $links;
-});
-
-// Ajouter un contrôle personnalisé pour les mises à jour automatiques dans la liste des plugins
-add_action('after_plugin_row_' . plugin_basename(__FILE__), function() {
-    $auto_updates_enabled = (bool) get_option('lepost_client_auto_update', false);
-    $current_status = $auto_updates_enabled ? 'activées' : 'désactivées';
-    $toggle_status = $auto_updates_enabled ? 'désactiver' : 'activer';
-    $nonce = wp_create_nonce('lepost_toggle_auto_updates');
-    
-    echo '<tr class="plugin-update-tr active"><td colspan="4" class="plugin-update colspanchange">
-        <div class="notice inline notice-info notice-alt">
-            <p>Les mises à jour automatiques sont actuellement <strong>' . $current_status . '</strong>. 
-            <a href="' . admin_url('admin.php?page=lepost-client&tab=settings') . '">Changer ce paramètre</a> ou 
-            <a href="' . admin_url('admin-post.php?action=lepost_toggle_auto_updates&nonce=' . $nonce) . '">' . $toggle_status . ' maintenant</a>.
-            </p>
-        </div>
-    </td></tr>';
-});
-
-// Traiter l'action de bascule des mises à jour automatiques
-add_action('admin_post_lepost_toggle_auto_updates', function() {
-    // Vérifier le nonce pour la sécurité
-    if (!isset($_GET['nonce']) || !wp_verify_nonce($_GET['nonce'], 'lepost_toggle_auto_updates')) {
-        wp_die('Action non autorisée.');
-    }
-    
-    // Récupérer l'état actuel et le basculer
-    $current_value = (bool) get_option('lepost_client_auto_update', false);
-    update_option('lepost_client_auto_update', !$current_value);
-    
-    // Rediriger vers la page des plugins avec un message
-    wp_redirect(admin_url('plugins.php?lepost_auto_updates_toggled=1'));
-    exit;
-});
-
-// Afficher un message après le changement de statut
-add_action('admin_notices', function() {
-    if (isset($_GET['lepost_auto_updates_toggled'])) {
-        $status = (bool) get_option('lepost_client_auto_update', false) ? 'activées' : 'désactivées';
-        echo '<div class="notice notice-success is-dismissible"><p>Les mises à jour automatiques du plugin LePost Client ont été <strong>' . $status . '</strong>.</p></div>';
-    }
 });
 
 // Autoloader pour les classes du plugin
