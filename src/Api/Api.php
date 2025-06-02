@@ -627,6 +627,93 @@ class Api {
     }
 
     /**
+     * Get free usage information for idea generation
+     *
+     * @param bool $force_refresh Force refresh from API
+     * @return array Free usage information
+     */
+    public function get_free_usage_info($force_refresh = false) {
+        if (!$force_refresh) {
+            // Check for cached data
+            $cached_info = get_transient('lepost_client_free_usage_info');
+            if ($cached_info !== false) {
+                return array_merge($cached_info, ['cached' => true]);
+            }
+        }
+        
+        if (empty($this->api_key)) {
+            return [
+                'success' => false,
+                'message' => __('Clé API non configurée', 'lepost-client'),
+                'ideas_remaining_free' => 0
+            ];
+        }
+
+        // Use the enhanced verify-api-key endpoint with free usage information
+        $url = rtrim($this->api_url, '/') . '/wp-json/le-post/v1/verify-api-key';
+        
+        $args = [
+            'method'  => 'POST',
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'Accept'       => 'application/json',
+            ],
+            'body'    => json_encode([
+                'api_key' => $this->api_key,
+                'include' => ['free_usage'] // Request free usage information
+            ]),
+            'timeout' => $this->timeout,
+            'sslverify' => $this->sslverify
+        ];
+
+        $response = wp_remote_request($url, $args);
+
+        if (is_wp_error($response)) {
+            return [
+                'success' => false,
+                'message' => $response->get_error_message(),
+                'ideas_remaining_free' => 0
+            ];
+        }
+
+        $response_code = wp_remote_retrieve_response_code($response);
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+
+        if ($response_code !== 200) {
+            return [
+                'success' => false,
+                'message' => sprintf(__('Erreur API (code %d)', 'lepost-client'), $response_code),
+                'ideas_remaining_free' => 0
+            ];
+        }
+
+        // Handle the enhanced API response format
+        if (isset($body['success']) && $body['success'] === true && 
+            isset($body['data']['free_usage'])) {
+            
+            $free_usage = $body['data']['free_usage'];
+            
+            // Cache the result for 5 minutes to reduce API calls
+            $result = [
+                'success' => true,
+                'free_usage' => $free_usage,
+                'message' => __('Informations d\'usage gratuit récupérées avec succès.', 'lepost-client'),
+                'cached' => false
+            ];
+
+            set_transient('lepost_client_free_usage_info', $result, 300); // 5 minutes cache
+            
+            return $result;
+        }
+
+        return [
+            'success' => false,
+            'message' => $body['message'] ?? __('Impossible de récupérer les informations d\'usage gratuit', 'lepost-client'),
+            'ideas_remaining_free' => 0
+        ];
+    }
+
+    /**
      * Make a generic API request
      *
      * @param string $method HTTP method (GET, POST, etc.)

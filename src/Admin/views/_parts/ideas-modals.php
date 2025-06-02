@@ -24,6 +24,18 @@ if (!defined('ABSPATH')) {
             <?php esc_html_e('Générer des idées avec l\'IA', 'lepost-client'); ?>
         </h3>
         
+        <!-- Free usage information section -->
+        <div id="lepost-free-usage-info" class="lepost-free-usage-info" style="margin-bottom: 20px;">
+            <div class="lepost-notice lepost-notice-info">
+                <p>
+                    <span class="dashicons dashicons-info"></span>
+                    <strong><?php esc_html_e('Génération gratuite', 'lepost-client'); ?></strong>
+                    <br>
+                    <?php esc_html_e('Vous pouvez générer jusqu\'à 50 idées gratuitement chaque mois.', 'lepost-client'); ?>
+                </p>
+            </div>
+        </div>
+        
         <form method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" class="lepost-admin-form" id="lepost-ideas-generation-form">
             <input type="hidden" name="action" value="lepost_generate_ideas_submit">
             <?php wp_nonce_field('lepost_generate_ideas_nonce', 'lepost_generate_ideas_nonce_field'); ?>
@@ -47,7 +59,7 @@ if (!defined('ABSPATH')) {
                     <option value="10">10</option>
                     <option value="15">15</option>
                 </select>
-                <p class="description"><?php esc_html_e('La génération de plus d\'idées prendra plus de temps et consommera plus de crédits.', 'lepost-client'); ?></p>
+                <p class="description"><?php esc_html_e('Vous pouvez générer jusqu\'à 50 idées gratuitement chaque mois.', 'lepost-client'); ?></p>
             </div>
             
             <div class="lepost-admin-actions">
@@ -75,4 +87,52 @@ if (!defined('ABSPATH')) {
         <div id="lepost-modal-description"></div>
     </div>
 </div>
+
+<!-- CSS for free usage notices -->
+<style>
+.lepost-free-usage-info {
+    margin-bottom: 20px;
+}
+
+.lepost-notice {
+    padding: 12px;
+    border-radius: 4px;
+    border-left: 4px solid;
+    margin: 10px 0;
+}
+
+.lepost-notice.lepost-notice-success {
+    background-color: #f0f8f0;
+    border-left-color: #00a32a;
+    color: #155724;
+}
+
+.lepost-notice.lepost-notice-warning {
+    background-color: #fff8e6;
+    border-left-color: #ffb900;
+    color: #7c5d00;
+}
+
+.lepost-notice.lepost-notice-info {
+    background-color: #f0f6fc;
+    border-left-color: #0073aa;
+    color: #0073aa;
+}
+
+.lepost-notice p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.lepost-notice .dashicons {
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.lepost-notice small {
+    opacity: 0.8;
+    font-size: 0.9em;
+}
+</style>
+
 <!-- FIN SECTION: MODALES --> 

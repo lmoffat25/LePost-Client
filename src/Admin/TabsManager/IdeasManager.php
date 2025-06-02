@@ -269,6 +269,50 @@ class IdeasManager extends AbstractSettingsTab {
     }
 
     /**
+     * Récupère les informations d'usage gratuit
+     *
+     * @return array|null Informations d'usage gratuit ou null en cas d'erreur
+     */
+    private function get_free_usage_info() {
+        try {
+            return $this->api->get_free_usage_info(false); // Use cache
+        } catch (Exception $e) {
+            error_log('Erreur lors de la récupération des informations d\'usage gratuit: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Récupère les données d'usage gratuit pour JavaScript
+     *
+     * @return array Données d'usage gratuit formatées pour JS
+     */
+    public function get_free_usage_data_for_js() {
+        $free_usage_info = $this->get_free_usage_info();
+        
+        if ($free_usage_info && isset($free_usage_info['free_usage'])) {
+            $usage = $free_usage_info['free_usage'];
+            return [
+                'has_free_usage' => true,
+                'ideas_used_this_month' => $usage['ideas_used_this_month'],
+                'ideas_remaining_free' => $usage['ideas_remaining_free'],
+                'total_free_per_month' => $usage['total_free_per_month'],
+                'percentage_used' => $usage['percentage_used'],
+                'next_reset_date' => $usage['next_reset_date']
+            ];
+        }
+        
+        return [
+            'has_free_usage' => false,
+            'ideas_used_this_month' => 0,
+            'ideas_remaining_free' => 0,
+            'total_free_per_month' => 50,
+            'percentage_used' => 0,
+            'next_reset_date' => date('Y-m-01', strtotime('first day of next month'))
+        ];
+    }
+
+    /**
      * Gère la soumission du formulaire de génération d'idées.
      *
      * @since 1.0.0
