@@ -52,24 +52,42 @@ if (!defined('ABSPATH')) {
             <span class="dashicons dashicons-tickets-alt"></span>
         </div>
         <div class="lepost-dashboard-card-content">
-            <div class="lepost-dashboard-card-value"><?php echo esc_html($api_credits); ?></div>
+            <div class="lepost-dashboard-card-value">
+                <?php if (isset($error) && $error): ?>
+                    <span style="color: #d63638;">⚠️</span>
+                <?php else: ?>
+                    <?php echo esc_html($api_credits); ?>
+                <?php endif; ?>
+            </div>
             <div class="lepost-dashboard-card-label">
                 <?php esc_html_e('Crédits API disponibles', 'lepost-client'); ?>
 
-                <div class="lepost-credits-refresh">
-                    <?php 
-                    printf(
-                        esc_html__('Mis à jour: %s', 'lepost-client'),
-                        date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($refresh_time))
-                    ); 
-                    ?>
-                    <a href="<?php echo esc_url(add_query_arg('refresh_credits', '1')); ?>" class="lepost-refresh-credits" title="<?php esc_attr_e('Actualiser les crédits', 'lepost-client'); ?>">
-                        <span class="dashicons dashicons-update"></span>
-                    </a>
-                </div>
+                <?php if (isset($error) && $error): ?>
+                    <div class="lepost-credits-error" style="color: #d63638; font-size: 12px; margin-top: 5px;">
+                        <?php echo esc_html($error_message ?? __('Erreur lors de la récupération des crédits', 'lepost-client')); ?>
+                        <br>
+                        <a href="<?php echo esc_url(add_query_arg('refresh_credits', '1')); ?>" class="lepost-refresh-credits" style="text-decoration: underline;">
+                            <?php esc_html_e('Réessayer', 'lepost-client'); ?>
+                        </a>
+                    </div>
+                <?php else: ?>
+                    <div class="lepost-credits-refresh">
+                        <?php 
+                        printf(
+                            esc_html__('Mis à jour: %s', 'lepost-client'),
+                            date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($refresh_time))
+                        ); 
+                        ?>
+                        <a href="<?php echo esc_url(add_query_arg('refresh_credits', '1')); ?>" class="lepost-refresh-credits" title="<?php esc_attr_e('Actualiser les crédits', 'lepost-client'); ?>">
+                            <span class="dashicons dashicons-update"></span>
+                        </a>
+                    </div>
+                <?php endif; ?>
+
                 <?php if ($show_debug): ?>
                 <div class="lepost-credits-debug">
-                    <pre><?php print_r($account_info); ?></pre>
+                    <strong>Debug Information:</strong>
+                    <pre style="background: #f0f0f0; padding: 10px; margin-top: 10px; font-size: 11px; max-height: 200px; overflow-y: auto;"><?php print_r($account_info); ?></pre>
                 </div>
                 <?php endif; ?>
             </div>

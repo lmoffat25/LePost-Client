@@ -512,7 +512,34 @@ class Api {
             ];
         }
 
-        // Endpoint de vérification de la clé API qui renvoie aussi les infos du compte
+        // First, verify the API key
+        $verification_result = $this->verify_api_key_only();
+        if (!$verification_result['success']) {
+            return $verification_result;
+        }
+
+        // Then try to get credits from a dedicated endpoint
+        $credits_result = $this->get_credits_from_api();
+        
+        return [
+            'success' => true,
+            'account' => $verification_result['data'] ?? [],
+            'credits' => $credits_result['credits'],
+            'message' => __('Informations du compte récupérées avec succès.', 'lepost-client'),
+            'debug' => [
+                'verification' => $verification_result,
+                'credits' => $credits_result
+            ],
+            'cached' => false
+        ];
+    }
+
+    /**
+     * Verify API key only (separate from credit retrieval)
+     *
+     * @return array
+     */
+    private function verify_api_key_only() {
         $url = rtrim($this->api_url, '/') . '/wp-json/le-post/v1/verify-api-key';
         
         $args = [
@@ -520,17 +547,13 @@ class Api {
             'headers' => [
                 'Content-Type' => 'application/json',
                 'Accept'       => 'application/json',
-            ],
-            'body'    => json_encode(['api_key' => $this->api_key]),
-            'timeout' => $this->timeout,
-            'sslverify' => $this->sslverify,
-            'headers' => [
-                'Content-Type' => 'application/json',
-                'Accept'       => 'application/json',
                 'Cache-Control' => 'no-cache, no-store, must-revalidate',
                 'Pragma' => 'no-cache',
                 'Expires' => '0'
-            ]
+            ],
+            'body'    => json_encode(['api_key' => $this->api_key]),
+            'timeout' => $this->timeout,
+            'sslverify' => $this->sslverify
         ];
 
         $response = wp_remote_request($url, $args);
@@ -545,42 +568,228 @@ class Api {
 
         $response_code = wp_remote_retrieve_response_code($response);
         $body = json_decode(wp_remote_retrieve_body($response), true);
+        $raw_response = wp_remote_retrieve_body($response);
 
-        // Ajouter des informations de débogage
-        $debug_info = [
-            'response_code' => $response_code,
-            'raw_response' => wp_remote_retrieve_body($response)
-        ];
+        error_log('LePost API Verification: Response Code: ' . $response_code);
+        error_log('LePost API Verification: Raw Response: ' . $raw_response);
 
-        if ($response_code !== 200 || !isset($body['valid']) || !$body['valid']) {
-            $message = isset($body['message']) 
-                ? $body['message'] 
-                : __('Une erreur s\'est produite lors de la récupération des informations du compte.', 'lepost-client');
-            
+        if ($response_code !== 200) {
             return [
                 'success' => false,
-                'message' => $message,
+                'message' => sprintf(__('Erreur API (code %d)', 'lepost-client'), $response_code),
                 'credits' => 0,
-                'debug' => $debug_info
+                'debug' => ['response_code' => $response_code, 'raw_response' => $raw_response]
             ];
         }
 
-        // Extraire les informations du compte
-        $account_info = isset($body['account']) ? $body['account'] : [];
-        $credits_info = isset($account_info['credits']) ? $account_info['credits'] : [];
-        $credits_remaining = isset($credits_info['credits_remaining']) ? (int) $credits_info['credits_remaining'] : 0;
-        
-        // Stocker les crédits pour une utilisation ultérieure
-        update_option('lepost_client_credits', $credits_remaining);
-        
+        // Handle the actual API response format
+        if (isset($body['success']) && $body['success'] === true && isset($body['data']['is_valid']) && $body['data']['is_valid'] === true) {
+            return [
+                'success' => true,
+                'data' => $body['data'],
+                'message' => __('Clé API valide', 'lepost-client')
+            ];
+        }
+
         return [
-            'success' => true,
-            'account' => $account_info,
-            'credits' => $credits_remaining,
-            'message' => __('Informations du compte récupérées avec succès.', 'lepost-client'),
-            'debug' => $debug_info,
-            'cached' => false
+            'success' => false,
+            'message' => $body['message'] ?? __('Clé API invalide', 'lepost-client'),
+            'credits' => 0,
+            'debug' => ['response_code' => $response_code, 'raw_response' => $raw_response]
         ];
+    }
+
+    /**
+     * Get credits from API (try multiple endpoints)
+     *
+     * @return array
+     */
+    private function get_credits_from_api() {
+        // Try the account-info endpoint first (most comprehensive)
+        $account_result = $this->try_account_info_endpoint();
+        if ($account_result['success']) {
+            error_log('LePost API: Successfully got credits from /account-info endpoint');
+            return $account_result;
+        }
+
+        // Fallback to other possible endpoints
+        $fallback_endpoints = [
+            '/wp-json/le-post/v1/get-credits',
+            '/wp-json/le-post/v1/user-credits'
+        ];
+
+        foreach ($fallback_endpoints as $endpoint) {
+            $result = $this->try_credits_endpoint($endpoint);
+            if ($result['success']) {
+                error_log('LePost API: Successfully got credits from endpoint: ' . $endpoint);
+                return $result;
+            }
+        }
+
+        // If no endpoint works, return 0 credits but log the attempt
+        error_log('LePost API: No working credits endpoint found. Returning 0 credits.');
+        return [
+            'success' => false,
+            'credits' => 0,
+            'message' => __('Impossible de récupérer les informations de crédits', 'lepost-client')
+        ];
+    }
+
+    /**
+     * Try the account-info endpoint specifically
+     *
+     * @return array
+     */
+    private function try_account_info_endpoint() {
+        $url = rtrim($this->api_url, '/') . '/wp-json/le-post/v1/account-info';
+        
+        $args = [
+            'method'  => 'POST',
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'Accept'       => 'application/json',
+            ],
+            'body'    => json_encode(['api_key' => $this->api_key]),
+            'timeout' => $this->timeout,
+            'sslverify' => $this->sslverify
+        ];
+
+        $response = wp_remote_request($url, $args);
+
+        if (is_wp_error($response)) {
+            return ['success' => false, 'credits' => 0, 'message' => $response->get_error_message()];
+        }
+
+        $response_code = wp_remote_retrieve_response_code($response);
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+        $raw_response = wp_remote_retrieve_body($response);
+
+        error_log('LePost API account-info: Response Code: ' . $response_code);
+        error_log('LePost API account-info: Raw Response: ' . $raw_response);
+
+        if ($response_code === 200 && $body && isset($body['success']) && $body['success'] === true) {
+            // Extract credits from the account-info response
+            $credits = 0;
+            
+            if (isset($body['data']['credits']['credits_remaining'])) {
+                $credits = (int) $body['data']['credits']['credits_remaining'];
+            }
+            
+            error_log('LePost API account-info: Extracted credits: ' . $credits);
+            
+            return [
+                'success' => true,
+                'credits' => $credits,
+                'endpoint' => '/account-info',
+                'response' => $body,
+                'account_data' => $body['data'] ?? []
+            ];
+        }
+
+        return [
+            'success' => false, 
+            'credits' => 0, 
+            'message' => 'Account-info endpoint failed or invalid response',
+            'debug' => ['response_code' => $response_code, 'raw_response' => $raw_response]
+        ];
+    }
+
+    /**
+     * Try a specific credits endpoint
+     *
+     * @param string $endpoint
+     * @return array
+     */
+    private function try_credits_endpoint($endpoint) {
+        $url = rtrim($this->api_url, '/') . $endpoint;
+        
+        $args = [
+            'method'  => 'POST',
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'Accept'       => 'application/json',
+            ],
+            'body'    => json_encode(['api_key' => $this->api_key]),
+            'timeout' => $this->timeout,
+            'sslverify' => $this->sslverify
+        ];
+
+        $response = wp_remote_request($url, $args);
+
+        if (is_wp_error($response)) {
+            return ['success' => false, 'credits' => 0, 'message' => $response->get_error_message()];
+        }
+
+        $response_code = wp_remote_retrieve_response_code($response);
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+
+        // Skip 404s (endpoint doesn't exist)
+        if ($response_code === 404) {
+            return ['success' => false, 'credits' => 0, 'message' => 'Endpoint not found'];
+        }
+
+        if ($response_code === 200 && $body) {
+            // Try to extract credits from various possible response formats
+            $credits = $this->extract_credits_from_response($body);
+            if ($credits !== null) {
+                return [
+                    'success' => true,
+                    'credits' => $credits,
+                    'endpoint' => $endpoint,
+                    'response' => $body
+                ];
+            }
+        }
+
+        return ['success' => false, 'credits' => 0, 'message' => 'Credits not found in response'];
+    }
+
+    /**
+     * Extract credits from API response (handles multiple formats)
+     *
+     * @param array $response
+     * @return int|null
+     */
+    private function extract_credits_from_response($response) {
+        // Try different possible credit field locations
+        $possible_paths = [
+            'credits',
+            'data.credits',
+            'data.credits_remaining',
+            'account.credits.credits_remaining',
+            'credits_remaining',
+            'available_credits'
+        ];
+
+        foreach ($possible_paths as $path) {
+            $value = $this->get_nested_value($response, $path);
+            if ($value !== null && is_numeric($value)) {
+                return (int) $value;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get nested value from array using dot notation
+     *
+     * @param array $array
+     * @param string $path
+     * @return mixed|null
+     */
+    private function get_nested_value($array, $path) {
+        $keys = explode('.', $path);
+        $current = $array;
+
+        foreach ($keys as $key) {
+            if (!is_array($current) || !isset($current[$key])) {
+                return null;
+            }
+            $current = $current[$key];
+        }
+
+        return $current;
     }
 
     /**

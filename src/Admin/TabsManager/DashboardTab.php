@@ -95,23 +95,42 @@ class DashboardTab extends AbstractSettingsTab {
      */
     public function get_api_credits_info() {
         $account_info = $this->api->get_account_info();
-        $api_credits = $account_info['credits'];
+        
+        // Handle API errors gracefully
+        if (!isset($account_info['success']) || !$account_info['success']) {
+            error_log('LePost Client Dashboard: API call failed for credits info - ' . ($account_info['message'] ?? 'Unknown error'));
+            return [
+                'api_credits' => 0,
+                'credits_used' => 0,
+                'total_credits' => 0,
+                'account_info' => $account_info,
+                'refresh_time' => current_time('mysql'),
+                'error' => true,
+                'error_message' => $account_info['message'] ?? __('Erreur lors de la récupération des crédits', 'lepost-client')
+            ];
+        }
+        
+        // Extract credits safely with fallbacks
+        $api_credits = isset($account_info['credits']) ? (int) $account_info['credits'] : 0;
 
         // Informations détaillées sur les crédits si disponibles
         $credits_used = 0;
         $total_credits = 0;
-        if ($account_info['success'] && isset($account_info['account']['credits'])) {
+        if (isset($account_info['account']['credits'])) {
             $credits_info = $account_info['account']['credits'];
             $credits_used = isset($credits_info['credits_used']) ? (int) $credits_info['credits_used'] : 0;
             $total_credits = isset($credits_info['total_credits_allocated']) ? (int) $credits_info['total_credits_allocated'] : 0;
         }
+
+        error_log('LePost Client Dashboard: Credits retrieved successfully - Available: ' . $api_credits);
 
         return [
             'api_credits' => $api_credits,
             'credits_used' => $credits_used,
             'total_credits' => $total_credits,
             'account_info' => $account_info,
-            'refresh_time' => current_time('mysql')
+            'refresh_time' => current_time('mysql'),
+            'error' => false
         ];
     }
 

@@ -93,6 +93,12 @@ class Plugin {
         require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/ContentType/Idee.php';
         require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/ContentType/Article.php';
 
+        // Charger les classes TabsManager
+        require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Admin/TabsManager/AbstractSettingsTab.php';
+        require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Admin/TabsManager/DashboardTab.php';
+        require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Admin/TabsManager/IdeasManager.php';
+        require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Admin/TabsManager/SettingsTab.php';
+
         $this->loader = new Loader();
     }
 
@@ -117,10 +123,9 @@ class Plugin {
 
         // Initialiser et enregistrer les onglets
         $tabs = [
-            new \LePostClient\Admin\TabsManager\GeneralTab(),
             new \LePostClient\Admin\TabsManager\DashboardTab(),
             new \LePostClient\Admin\TabsManager\IdeasManager(),
-            new \LePostClient\Admin\TabsManager\ContentSettingsTab(),
+            new \LePostClient\Admin\TabsManager\SettingsTab(),
         ];
         
         // Enregistrer les onglets auprès de l'admin
