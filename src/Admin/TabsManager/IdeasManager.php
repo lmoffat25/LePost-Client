@@ -305,6 +305,14 @@ class IdeasManager extends AbstractSettingsTab {
         // Utiliser la méthode de l'API pour générer les idées
         $result = $this->api->generate_ideas($theme, $nombre);
 
+        // Check if result is a WP_Error object first
+        if (is_wp_error($result)) {
+            error_log('Erreur WP_Error lors de la génération d\'idées: ' . $result->get_error_message());
+            wp_redirect(add_query_arg('lepost_message', 'api_error_communication', wp_get_referer()));
+            exit;
+        }
+
+        // Now we can safely check the array
         if (!$result['success']) {
             error_log('Erreur lors de la génération d\'idées: ' . $result['message']);
             
