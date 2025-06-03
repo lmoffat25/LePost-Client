@@ -422,8 +422,13 @@ class Admin {
             wp_send_json_error(__('Vous n\'avez pas les permissions nécessaires.', 'lepost-client'));
         }
         
-        
-        $idee_id = intval($_POST['idee_id']);
+        // Handle both parameter names: 'idee_id' (from lepost_generate_article) and 'id' (from lepost_generate_article_from_idee)
+        $idee_id = 0;
+        if (isset($_POST['idee_id'])) {
+            $idee_id = intval($_POST['idee_id']);
+        } elseif (isset($_POST['id'])) {
+            $idee_id = intval($_POST['id']);
+        }
         
         if (empty($idee_id)) {
             wp_send_json_error(__('ID d\'idée invalide.', 'lepost-client'));
@@ -489,13 +494,17 @@ class Admin {
         
         // Vérification complète de la structure attendue
         if (!isset($api_result['article'])) {
+            error_log('LePost Client: [ERREUR] Clé "article" manquante dans la réponse API. Réponse complète: ' . print_r($api_result, true));
             wp_send_json_error(__('Format de réponse API inattendu: clé "article" manquante.', 'lepost-client'));
         }
         
         if (!isset($api_result['article']['content'])) {
+            error_log('LePost Client: [ERREUR] Clé "content" manquante dans article. Article reçu: ' . print_r($api_result['article'], true));
             wp_send_json_error(__('Format de réponse API inattendu: clé "content" manquante.', 'lepost-client'));
         }
         
+        // Log successful article data reception
+        error_log('LePost Client: [SUCCÈS] Article reçu avec titre: ' . ($api_result['article']['title'] ?? 'Titre par défaut') . ' et contenu de ' . strlen($api_result['article']['content']) . ' caractères');
         
         // Enregistrer l'article généré
         $article_data = [
@@ -505,14 +514,17 @@ class Admin {
             'statut' => 'draft'
         ];
         
+        error_log('LePost Client: [INFO] Tentative d\'enregistrement en base avec titre: ' . $article_data['titre']);
 
         $article_model = new Article();
         $article_id = $article_model->create($article_data);
         
         if (!$article_id) {
+            error_log('LePost Client: [ERREUR CRITIQUE] Échec de l\'enregistrement de l\'article en base pour l\'idée ID: ' . $idee_id);
             wp_send_json_error(__('Erreur lors de l\'enregistrement de l\'article généré.', 'lepost-client'));
         }
         
+        error_log('LePost Client: [SUCCÈS] Article enregistré en base avec ID: ' . $article_id);
         
         // Créer un article WordPress (toujours activé)
         $settings = get_option('lepost_client_settings', []);
@@ -522,6 +534,7 @@ class Admin {
         $post_id = Article::createWpPost($article_data, $settings);
         
         if ($post_id) {
+            error_log('LePost Client: [SUCCÈS] Post WordPress créé avec ID: ' . $post_id . ' pour l\'article ID: ' . $article_id);
 
             // Mettre à jour l'article custom avec le post_id et un nouveau statut
             $update_data = [
@@ -534,13 +547,21 @@ class Admin {
             if (!$update_article_result) {
                 // Logguer une erreur si la mise à jour du statut échoue, mais continuer car le post WP est créé.
                 error_log("LePost Client: Échec de la mise à jour du statut de l'article custom ID {$article_id} après création du post WP ID {$post_id}.");
+            } else {
+                error_log("LePost Client: [SUCCÈS] Mise à jour du statut de l'article custom ID {$article_id} vers 'published_wp'");
             }
             
             // Supprimer l'idée après la création réussie du post WordPress
             $delete_result = $idee_model->delete($idee_id);
-            // Vous pourriez vouloir vérifier $delete_result ici aussi
+            if ($delete_result) {
+                error_log("LePost Client: [SUCCÈS] Idée ID {$idee_id} supprimée après publication réussie");
+            } else {
+                error_log("LePost Client: [AVERTISSEMENT] Échec de la suppression de l'idée ID {$idee_id}");
+            }
             
-        } 
+        } else {
+            error_log('LePost Client: [ERREUR] Échec de la création du post WordPress pour l\'article ID: ' . $article_id);
+        }
         
         
         wp_send_json_success([

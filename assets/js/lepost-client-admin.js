@@ -232,8 +232,14 @@
                     success: function(response) {
                         if (response.success) {
                             alert(response.data.message);
-                            // Rediriger vers la page de l'article généré
-                            window.location.href = 'admin.php?page=lepost-client-articles&id=' + response.data.article_id;
+                            // Rediriger vers le post WordPress créé ou refresher la page
+                            if (response.data.post_id) {
+                                // Rediriger vers l'édition du post WordPress créé
+                                window.location.href = 'post.php?post=' + response.data.post_id + '&action=edit';
+                            } else {
+                                // Fallback: simplement recharger la page des idées
+                                window.location.reload();
+                            }
                         } else {
                             alert(response.data);
                         }

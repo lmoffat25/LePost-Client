@@ -119,7 +119,9 @@ class Plugin {
         // AJAX hooks
         $this->loader->add_action('wp_ajax_lepost_save_api_key', $admin, 'save_api_key');
         $this->loader->add_action('wp_ajax_lepost_test_api_connection', $admin, 'test_api_connection');
+        $this->loader->add_action('wp_ajax_lepost_client_test_api_connection', $admin, 'test_api_connection');
         $this->loader->add_action('wp_ajax_lepost_generate_article', $admin, 'generate_article');
+        $this->loader->add_action('wp_ajax_lepost_generate_article_from_idee', $admin, 'generate_article');
 
         // Initialiser et enregistrer les onglets
         $tabs = [
