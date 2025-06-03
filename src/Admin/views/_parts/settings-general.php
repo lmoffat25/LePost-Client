@@ -16,8 +16,6 @@ if (!defined('ABSPATH')) {
 <div class="lepost-admin-card">
     <h3><?php esc_html_e('Paramètres des articles WordPress', 'lepost-client'); ?></h3>
     
-    <?php settings_fields('lepost_client_settings_group'); ?>
-    
     <div class="lepost-admin-form-group">
         <label for="default_status"><?php esc_html_e('Statut par défaut des articles', 'lepost-client'); ?></label>
         <select name="lepost_client_settings[default_status]" id="default_status">

@@ -16,25 +16,17 @@ if (!defined('ABSPATH')) {
 <div class="lepost-admin-card">
     <h3><?php esc_html_e('Paramètres de génération de contenu', 'lepost-client'); ?></h3>
     
-    <form method="post" action="options.php" class="lepost-admin-form">
-        <?php settings_fields('lepost_content_settings_group'); ?>
-        
-        <div class="lepost-admin-form-group">
-            <label for="company_info"><?php esc_html_e('Informations sur votre entreprise', 'lepost-client'); ?></label>
-            <textarea name="lepost_content_settings[company_info]" id="company_info" rows="5" class="large-text"><?php echo esc_textarea($content_settings['company_info'] ?? ''); ?></textarea>
-            <p class="description"><?php esc_html_e('Décrivez votre entreprise, ses valeurs, son secteur d\'activité, etc. Ces informations seront utilisées pour personnaliser le contenu généré.', 'lepost-client'); ?></p>
-        </div>
-        
-        <div class="lepost-admin-form-group">
-            <label for="writing_style_article"><?php esc_html_e('Style d\'écriture préféré pour les articles', 'lepost-client'); ?></label>
-            <textarea name="lepost_content_settings[writing_style][article]" id="writing_style_article" rows="4" class="large-text"><?php echo esc_textarea($content_settings['writing_style']['article'] ?? ''); ?></textarea>
-            <p class="description"><?php esc_html_e('Décrivez le style d\'écriture que vous souhaitez pour vos articles (ton, niveau de langage, structure préférée, etc.).', 'lepost-client'); ?></p>
-        </div>
-        
-        <div class="lepost-admin-form-submit">
-            <?php submit_button(__('Enregistrer les paramètres', 'lepost-client'), 'primary', 'submit_content_settings', false, ['id' => 'submit_content_settings']); ?>
-        </div>
-    </form>
+    <div class="lepost-admin-form-group">
+        <label for="company_info"><?php esc_html_e('Informations sur votre entreprise', 'lepost-client'); ?></label>
+        <textarea name="lepost_content_settings[company_info]" id="company_info" rows="5" class="large-text"><?php echo esc_textarea($content_settings['company_info'] ?? ''); ?></textarea>
+        <p class="description"><?php esc_html_e('Décrivez votre entreprise, ses valeurs, son secteur d\'activité, etc. Ces informations seront utilisées pour personnaliser le contenu généré.', 'lepost-client'); ?></p>
+    </div>
+    
+    <div class="lepost-admin-form-group">
+        <label for="writing_style_article"><?php esc_html_e('Style d\'écriture préféré pour les articles', 'lepost-client'); ?></label>
+        <textarea name="lepost_content_settings[writing_style][article]" id="writing_style_article" rows="4" class="large-text"><?php echo esc_textarea($content_settings['writing_style']['article'] ?? ''); ?></textarea>
+        <p class="description"><?php esc_html_e('Décrivez le style d\'écriture que vous souhaitez pour vos articles (ton, niveau de langage, structure préférée, etc.).', 'lepost-client'); ?></p>
+    </div>
 </div>
 
 <!-- La section suivante pour le test de génération d'article est supprimée

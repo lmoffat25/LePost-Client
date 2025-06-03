@@ -490,14 +490,27 @@ class Api {
         }
 
         // Vérification de la structure de la réponse
-        if (isset($decoded_body['article']) && isset($decoded_body['article']['content'])) {
+        // Handle both old format (direct) and new format (with success wrapper)
+        $article_data = null;
+        
+        // New format: {"success": true, "data": {"article": {...}}}
+        if (isset($decoded_body['success']) && $decoded_body['success'] === true && 
+            isset($decoded_body['data']['article'])) {
+            $article_data = $decoded_body['data']['article'];
+        }
+        // Old format: {"article": {...}}
+        elseif (isset($decoded_body['article'])) {
+            $article_data = $decoded_body['article'];
+        }
+        
+        if ($article_data && isset($article_data['content'])) {
             error_log('LePost API: [SUCCÈS] Article généré avec succès');
-            error_log('LePost API: [DEBUG] Titre: ' . ($decoded_body['article']['title'] ?? 'Non spécifié'));
-            error_log('LePost API: [DEBUG] Taille du contenu: ' . strlen($decoded_body['article']['content']) . ' caractères');
+            error_log('LePost API: [DEBUG] Titre: ' . ($article_data['title'] ?? 'Non spécifié'));
+            error_log('LePost API: [DEBUG] Taille du contenu: ' . strlen($article_data['content']) . ' caractères');
             
             return [
                 'success' => true,
-                'article' => $decoded_body['article'],
+                'article' => $article_data,
                 'message' => __('L\'article a été généré avec succès.', 'lepost-client')
             ];
         }

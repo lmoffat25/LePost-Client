@@ -27,20 +27,32 @@ $content_settings = get_option('lepost_content_settings', [
 ]);
 
 ?>
-<form method="post" action="options.php">
-    <div class="lepost-settings-content">
+<div class="lepost-settings-content">
+    
+    <!-- CONTENT SETTINGS FORM -->
+    <form method="post" action="options.php">
         <?php 
+        settings_fields('lepost_content_settings_group');
+        do_settings_sections('lepost_content_settings_group');
+        
         // Les données de l'entreprise et style d'écriture
         include LEPOST_CLIENT_PLUGIN_DIR . 'src/Admin/views/_parts/settings-content.php';
-       
+        
+        submit_button(__('Enregistrer les paramètres de contenu', 'lepost-client'));
+        ?>
+    </form>
+    
+    <!-- GENERAL SETTINGS FORM -->
+    <form method="post" action="options.php">
+        <?php 
+        settings_fields('lepost_client_settings_group');
+        do_settings_sections('lepost_client_settings_group');
+        
         // Les paramètres généraux
         include LEPOST_CLIENT_PLUGIN_DIR . 'src/Admin/views/_parts/settings-general.php'; 
         
-        // Section des mises à jour
-        settings_fields('lepost_client_settings');
-        do_settings_sections('lepost_client_settings');
-        
-        submit_button();
+        submit_button(__('Enregistrer les paramètres généraux', 'lepost-client'));
         ?>
-    </div>
-</form> 
+    </form>
+    
+</div> 
