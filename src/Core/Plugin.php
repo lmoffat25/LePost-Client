@@ -66,8 +66,35 @@ class Plugin {
         $this->version = LEPOST_CLIENT_VERSION;
 
         $this->load_dependencies();
+        $this->set_locale();
         $this->define_admin_hooks();
         $this->define_api_hooks();
+    }
+
+    /**
+     * Define the locale for this plugin for internationalization.
+     *
+     * Uses the I18n class in order to set the domain and to register the hook
+     * with WordPress.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function set_locale() {
+        $this->loader->add_action('init', $this, 'load_plugin_textdomain');
+    }
+
+    /**
+     * Load the plugin text domain for translation.
+     *
+     * @since    1.0.0
+     */
+    public function load_plugin_textdomain() {
+        load_plugin_textdomain(
+            'lepost-client',
+            false,
+            dirname(plugin_basename(__FILE__)) . '/../../languages/'
+        );
     }
 
     /**
@@ -84,7 +111,8 @@ class Plugin {
         require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Core/Loader.php';
         
         // La classe responsable de définir les fonctionnalités administratives
-        require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Admin/Admin.php';
+        // require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Admin/Admin.php';
+        require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Admin/SimpleAdmin.php';
         
         // La classe responsable de gérer les appels à l'API LePost
         require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Api/Api.php';
@@ -93,11 +121,13 @@ class Plugin {
         require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/ContentType/Idee.php';
         require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/ContentType/Article.php';
 
-        // Charger les classes TabsManager
-        require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Admin/TabsManager/AbstractSettingsTab.php';
-        require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Admin/TabsManager/DashboardTab.php';
-        require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Admin/TabsManager/IdeasManager.php';
-        require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Admin/TabsManager/SettingsTab.php';
+        // Les nouvelles classes pour l'admin simplifié
+        require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Admin/Pages/AbstractPage.php';
+        require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Admin/Pages/DashboardPage.php';
+        require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Admin/Pages/IdeasPage.php';
+        require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Admin/Pages/SettingsPage.php';
+        require_once LEPOST_CLIENT_PLUGIN_DIR . 'src/Admin/Pages/GenerateArticlePage.php';
+        // Note: IdeasListTable is loaded only when needed in admin context
 
         $this->loader = new Loader();
     }
@@ -109,29 +139,25 @@ class Plugin {
      * @access   private
      */
     private function define_admin_hooks() {
-        $admin = new \LePostClient\Admin\Admin($this->get_plugin_name(), $this->get_version());
+        $admin = new \LePostClient\Admin\SimpleAdmin($this->get_plugin_name(), $this->get_version());
 
         // Hooks principaux de l'admin
         $this->loader->add_action('admin_enqueue_scripts', $admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $admin, 'enqueue_scripts');
-        $this->loader->add_action('admin_menu', $admin, 'add_menu_pages');
+        $this->loader->add_action('admin_menu', $admin, 'add_admin_menu');
         
-        // AJAX hooks
-        $this->loader->add_action('wp_ajax_lepost_save_api_key', $admin, 'save_api_key');
-        $this->loader->add_action('wp_ajax_lepost_test_api_connection', $admin, 'test_api_connection');
-        $this->loader->add_action('wp_ajax_lepost_client_test_api_connection', $admin, 'test_api_connection');
-        $this->loader->add_action('wp_ajax_lepost_generate_article', $admin, 'generate_article');
-        $this->loader->add_action('wp_ajax_lepost_generate_article_from_idee', $admin, 'generate_article');
+        // Initialisation des paramètres par défaut
+        $this->loader->add_action('admin_init', $admin, 'init_default_settings');
+        
+        // Gestion des actions admin-post.php
+        $this->loader->add_action('admin_post_lepost_save_idea', $admin, 'handle_admin_actions');
+        $this->loader->add_action('admin_post_lepost_test_api', $admin, 'handle_admin_actions');
+        $this->loader->add_action('admin_post_lepost_generate_ideas', $admin, 'handle_admin_actions');
+        $this->loader->add_action('admin_post_lepost_generate_article', $admin, 'handle_admin_actions');
 
-        // Initialiser et enregistrer les onglets
-        $tabs = [
-            new \LePostClient\Admin\TabsManager\DashboardTab(),
-            new \LePostClient\Admin\TabsManager\IdeasManager(),
-            new \LePostClient\Admin\TabsManager\SettingsTab(),
-        ];
-        
-        // Enregistrer les onglets auprès de l'admin
-        $admin->register_tabs($tabs);
+        // Action links dans la liste des plugins
+        $plugin_basename = plugin_basename(LEPOST_CLIENT_PLUGIN_DIR . 'lepost-client.php');
+        $this->loader->add_filter('plugin_action_links_' . $plugin_basename, $admin, 'add_action_links');
     }
     
     /**

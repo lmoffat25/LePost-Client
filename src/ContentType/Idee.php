@@ -82,6 +82,70 @@ class Idee {
     }
 
     /**
+     * Récupère toutes les idées avec filtres avancés pour la table d'administration
+     *
+     * @param array $filters Filtres à appliquer (page, per_page, orderby, order, search)
+     * @return array Tableau contenant les idées et le nombre total
+     */
+    public function get_all_with_filters($filters = []) {
+        global $wpdb;
+
+        // Default values
+        $page = isset($filters['page']) ? max(1, intval($filters['page'])) : 1;
+        $per_page = isset($filters['per_page']) ? max(1, intval($filters['per_page'])) : 10;
+        $orderby = isset($filters['orderby']) ? sanitize_sql_orderby($filters['orderby']) : 'created_at';
+        $order = isset($filters['order']) && strtoupper($filters['order']) === 'ASC' ? 'ASC' : 'DESC';
+        $search = isset($filters['search']) ? sanitize_text_field($filters['search']) : '';
+
+        // Validate orderby column
+        $allowed_orderby = ['id', 'title', 'titre', 'created_at', 'updated_at'];
+        if (!in_array($orderby, $allowed_orderby)) {
+            $orderby = 'created_at';
+        }
+        
+        // Map 'title' to 'titre' for compatibility
+        if ($orderby === 'title') {
+            $orderby = 'titre';
+        }
+
+        // Build WHERE clause for search
+        $where_clause = '';
+        $where_values = [];
+        
+        if (!empty($search)) {
+            $where_clause = " WHERE (titre LIKE %s OR description LIKE %s)";
+            $search_term = '%' . $wpdb->esc_like($search) . '%';
+            $where_values = [$search_term, $search_term];
+        }
+
+        // Count total matching records
+        $count_query = "SELECT COUNT(*) FROM $this->table_name" . $where_clause;
+        $total = 0;
+        
+        if (!empty($where_values)) {
+            $total = (int) $wpdb->get_var($wpdb->prepare($count_query, $where_values));
+        } else {
+            $total = (int) $wpdb->get_var($count_query);
+        }
+
+        // Calculate offset
+        $offset = ($page - 1) * $per_page;
+
+        // Build main query
+        $main_query = "SELECT * FROM $this->table_name" . $where_clause . 
+                     " ORDER BY $orderby $order LIMIT %d, %d";
+
+        // Prepare and execute main query
+        $query_values = array_merge($where_values, [$offset, $per_page]);
+        $idees = $wpdb->get_results($wpdb->prepare($main_query, $query_values));
+
+        return [
+            'idees' => $idees,
+            'total' => $total
+        ];
+    }
+
+    /**
      * Récupère une idée par son ID
      *
      * @param int $id    ID de l'idée à récupérer

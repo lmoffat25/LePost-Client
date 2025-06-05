@@ -440,4 +440,44 @@ class Article {
         
         return (int) $post_id; // Assurer que c'est un entier
     }
+
+    /**
+     * Get recent articles
+     *
+     * @since 2.0.0
+     * @param int $limit Number of articles to retrieve
+     * @return array Recent articles
+     */
+    public function get_recent($limit = 5) {
+        global $wpdb;
+        
+        $query = $wpdb->prepare(
+            "SELECT a.*, i.titre as idee_titre 
+             FROM {$this->table_name} a 
+             LEFT JOIN {$wpdb->prefix}lepost_idees i ON a.idee_id = i.id 
+             ORDER BY a.created_at DESC 
+             LIMIT %d",
+            $limit
+        );
+        
+        return $wpdb->get_results($query);
+    }
+
+    /**
+     * Save article (create or update based on ID presence)
+     *
+     * @since 2.0.0
+     * @param array $article_data Article data
+     * @return int|false Article ID on success, false on failure
+     */
+    public function save($article_data) {
+        if (isset($article_data['id']) && $article_data['id'] > 0) {
+            // Update existing article
+            $success = $this->update($article_data);
+            return $success ? $article_data['id'] : false;
+        } else {
+            // Create new article
+            return $this->create($article_data);
+        }
+    }
 } 

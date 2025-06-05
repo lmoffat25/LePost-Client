@@ -102,18 +102,28 @@ jQuery(document).ready(function($) {
         }, 500);
     });
 
-    // NOTE: La gestion de la suppression d'idées est implémentée dans lepost-client-admin.js
+    // NOTE: La gestion de la suppression d'idées est implémentée dans lepost-ideas-manager.js
     // via la méthode setupIdeeActions(). Ne pas ajouter de gestionnaire ici pour éviter la duplication.
 
     // Amélioration de l'expérience utilisateur pour la génération d'idées
-    $('#lepost-ideas-generation-form').on('submit', function() {
+    $('#lepost-ideas-generation-form').on('submit', function(e) {
         var $form = $(this);
         var $spinner = $form.find('.spinner');
         var $submitBtn = $form.find('#generate-ideas-btn');
         var $infoText = $form.find('.lepost-generation-info');
         var theme = $form.find('#modal-idee-theme').val();
         
+        // Vérification que la soumission vient bien du bon bouton
+        if (e.originalEvent && e.originalEvent.submitter) {
+            var submitterId = e.originalEvent.submitter.id;
+            if (submitterId !== 'generate-ideas-btn') {
+                e.preventDefault();
+                return false; // Empêcher la soumission si ce n'est pas le bon bouton
+            }
+        }
+        
         if (!theme) {
+            alert('<?php esc_html_e('Veuillez saisir un thème pour la génération d\'idées.', 'lepost-client'); ?>');
             return false;
         }
         
@@ -132,68 +142,9 @@ jQuery(document).ready(function($) {
         return true;
     });
     
-    // Gestion du bouton de génération d'article
-    $(document).on('click', '.lepost-generate-article', function() {
-        var $button = $(this);
-        var ideeId = $button.data('id');
-        
-        if (!ideeId) {
-            alert('<?php esc_html_e('ID d\'idée manquant. Impossible de générer l\'article.', 'lepost-client'); ?>');
-            return;
-        }
-        
-        // Ajouter un spinner à côté du bouton
-        $button.prop('disabled', true);
-        var $row = $button.closest('tr');
-        var $spinner = $('<span class="spinner is-active" style="float: none; margin-left: 5px;"></span>');
-        $button.after($spinner);
-        
-        // Appel AJAX pour générer l'article
-        $.ajax({
-            url: lepost_ideas_manager.ajax_url,
-            type: 'POST',
-            data: {
-                action: 'lepost_generate_article',
-                nonce: lepost_ideas_manager.nonce,
-                idee_id: ideeId
-            },
-            success: function(response) {
-                $spinner.remove();
-                $button.prop('disabled', false);
-                
-                if (response.success) {
-                    // Afficher un message de succès
-                    var $successMessage = $('<div class="notice notice-success is-dismissible"><p>' + 
-                                           response.data.message + '</p></div>');
-                    $('.lepost-admin-section').first().prepend($successMessage);
-                    
-                    // Mettre à jour le statut de l'idée dans l'UI
-                    $row.find('.lepost-idee-status').html('<span class="lepost-status-badge lepost-status-completed">' + 
-                                                         lepost_ideas_manager.i18n.status_completed + '</span>');
-                    
-                    // Faire défiler vers le haut pour voir le message
-                    $('html, body').animate({
-                        scrollTop: $successMessage.offset().top - 50
-                    }, 500);
-                    
-                    // Enlever le message après 3 secondes
-                    setTimeout(function() {
-                        $successMessage.fadeOut(500, function() {
-                            $(this).remove();
-                        });
-                    }, 3000);
-                } else {
-                    // Afficher un message d'erreur
-                    alert(response.data || lepost_ideas_manager.i18n.generate_error);
-                }
-            },
-            error: function() {
-                $spinner.remove();
-                $button.prop('disabled', false);
-                alert(lepost_ideas_manager.i18n.generate_error);
-            }
-        });
-    });
+    // NOTE: La gestion de la génération d'articles est maintenant implémentée dans lepost-ideas-manager.js
+    // avec le nouveau système de notifications modernes. Le code précédent a été supprimé pour éviter 
+    // les conflits et la duplication de fonctionnalités.
 });
 </script>
 <!-- FIN SECTION: SCRIPTS JAVASCRIPT --> 

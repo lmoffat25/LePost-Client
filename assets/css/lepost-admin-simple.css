@@ -1,0 +1,850 @@
+/**
+ * LePost Client - Simplified Admin CSS
+ *
+ * Clean, consistent styling for the simplified admin interface.
+ * Follows WordPress admin design patterns.
+ * Optimized for performance and WordPress admin theme compatibility.
+ *
+ * @package    LePostClient
+ * @since      2.0.0
+ * @version    2.1.0
+ */
+
+/* ==========================================================================
+   CSS Variables for WordPress Admin Theme Compatibility
+   ========================================================================== */
+
+:root {
+    --lepost-primary-color: #0073aa;
+    --lepost-primary-hover: #005a87;
+    --lepost-success-color: #46b450;
+    --lepost-warning-color: #ffb900;
+    --lepost-error-color: #d63638;
+    --lepost-border-color: #ccd0d4;
+    --lepost-background-color: #f1f1f1;
+    --lepost-card-background: #fff;
+    --lepost-text-color: #23282d;
+    --lepost-text-light: #666;
+    --lepost-border-radius: 4px;
+    --lepost-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    --lepost-transition: all 0.2s ease;
+}
+
+/* Dark mode compatibility */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --lepost-background-color: #1e1e1e;
+        --lepost-card-background: #2c2c2c;
+        --lepost-text-color: #e0e0e0;
+        --lepost-text-light: #b0b0b0;
+        --lepost-border-color: #444;
+    }
+}
+
+/* ==========================================================================
+   General Admin Styles
+   ========================================================================== */
+
+.lepost-admin {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    color: var(--lepost-text-color);
+}
+
+.lepost-admin .card {
+    background: var(--lepost-card-background);
+    border: 1px solid var(--lepost-border-color);
+    border-radius: var(--lepost-border-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--lepost-box-shadow);
+    transition: var(--lepost-transition);
+}
+
+.lepost-admin .card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.lepost-admin .card h2,
+.lepost-admin .card h3 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--lepost-border-color);
+    color: var(--lepost-text-color);
+}
+
+/* ==========================================================================
+   Dashboard Styles
+   ========================================================================== */
+
+.lepost-dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.lepost-dashboard-card {
+    background: var(--lepost-card-background);
+    border: 1px solid var(--lepost-border-color);
+    border-radius: var(--lepost-border-radius);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: var(--lepost-transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.lepost-dashboard-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.lepost-dashboard-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--lepost-primary-color);
+    opacity: 0;
+    transition: var(--lepost-transition);
+}
+
+.lepost-dashboard-card:hover::before {
+    opacity: 1;
+}
+
+.lepost-dashboard-card-icon {
+    font-size: 40px;
+    color: var(--lepost-primary-color);
+    flex-shrink: 0;
+    transition: var(--lepost-transition);
+}
+
+.lepost-dashboard-card:hover .lepost-dashboard-card-icon {
+    transform: scale(1.1);
+}
+
+.lepost-dashboard-card-content {
+    flex: 1;
+}
+
+.lepost-dashboard-card-value {
+    font-size: 32px;
+    font-weight: bold;
+    color: var(--lepost-text-color);
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+.lepost-dashboard-card-label {
+    color: var(--lepost-text-light);
+    font-size: 14px;
+    margin: 0;
+}
+
+.lepost-dashboard-card-action .button {
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+/* Quick Actions */
+.lepost-quick-actions {
+    margin: 20px 0;
+}
+
+.lepost-action-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.lepost-action-buttons .button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: var(--lepost-transition);
+}
+
+.lepost-action-buttons .button:hover {
+    transform: translateY(-1px);
+}
+
+/* Recent Items */
+.lepost-recent-section {
+    margin: 20px 0;
+}
+
+.lepost-recent-section .card-footer {
+    padding: 15px 0 0;
+    border-top: 1px solid var(--lepost-border-color);
+    margin-top: 15px;
+}
+
+/* API Status */
+.lepost-api-status .lepost-status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+    padding: 8px;
+    border-radius: var(--lepost-border-radius);
+    transition: var(--lepost-transition);
+}
+
+.lepost-api-status .lepost-status-item:hover {
+    background: rgba(0, 115, 170, 0.05);
+}
+
+/* Notifications */
+.lepost-dashboard-notifications {
+    margin: 20px 0;
+}
+
+/* ==========================================================================
+   Settings Styles
+   ========================================================================== */
+
+.lepost-settings .tab-content {
+    margin-top: 20px;
+}
+
+.lepost-settings .card {
+    background: var(--lepost-card-background);
+    border: 1px solid var(--lepost-border-color);
+    border-radius: var(--lepost-border-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.lepost-settings .required {
+    color: var(--lepost-error-color);
+    font-weight: bold;
+}
+
+/* Status Indicators */
+.lepost-status-success {
+    background: rgba(70, 180, 80, 0.1);
+    border: 1px solid var(--lepost-success-color);
+    border-radius: var(--lepost-border-radius);
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #2e7d32;
+    font-weight: 500;
+}
+
+.lepost-status-error {
+    background: rgba(214, 54, 56, 0.1);
+    border: 1px solid var(--lepost-error-color);
+    border-radius: var(--lepost-border-radius);
+    padding: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    color: #8b0000;
+}
+
+.lepost-connection-details {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--lepost-border-color);
+}
+
+.lepost-test-success p,
+.lepost-test-error p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.lepost-next-steps,
+.lepost-getting-started {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--lepost-border-color);
+}
+
+.lepost-next-steps ul,
+.lepost-getting-started ol {
+    margin-left: 20px;
+}
+
+.lepost-next-steps li,
+.lepost-getting-started li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   Generate Articles Styles
+   ========================================================================== */
+
+.lepost-generate-select .card {
+    background: var(--lepost-card-background);
+    border: 1px solid var(--lepost-border-color);
+    border-radius: var(--lepost-border-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.lepost-no-ideas-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.lepost-no-ideas-actions .button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.lepost-selection-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px 0;
+    padding: 15px;
+    background: rgba(0, 115, 170, 0.05);
+    border: 1px solid rgba(0, 115, 170, 0.2);
+    border-radius: var(--lepost-border-radius);
+    transition: var(--lepost-transition);
+}
+
+.lepost-selection-controls:hover {
+    background: rgba(0, 115, 170, 0.08);
+}
+
+.lepost-selected-count {
+    font-weight: 600;
+    color: var(--lepost-primary-color);
+    font-size: 16px;
+}
+
+.lepost-generation-options {
+    margin: 20px 0;
+    padding-top: 20px;
+    border-top: 1px solid var(--lepost-border-color);
+}
+
+.lepost-submit-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--lepost-border-color);
+    flex-wrap: wrap;
+}
+
+.lepost-submit-actions .button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 36px;
+}
+
+.idea-has-article {
+    background-color: rgba(0, 0, 0, 0.03);
+    opacity: 0.7;
+    transition: var(--lepost-transition);
+}
+
+.idea-has-article:hover {
+    opacity: 0.9;
+}
+
+/* ==========================================================================
+   Status Badges
+   ========================================================================== */
+
+.lepost-status-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: inline-block;
+    letter-spacing: 0.5px;
+    transition: var(--lepost-transition);
+}
+
+.lepost-status-badge:hover {
+    transform: scale(1.05);
+}
+
+.lepost-status-generated {
+    background: rgba(2, 119, 189, 0.1);
+    color: #0277bd;
+    border: 1px solid rgba(2, 119, 189, 0.3);
+}
+
+.lepost-status-published {
+    background: rgba(46, 125, 50, 0.1);
+    color: #2e7d32;
+    border: 1px solid rgba(46, 125, 50, 0.3);
+}
+
+.lepost-status-pending {
+    background: rgba(239, 108, 0, 0.1);
+    color: #ef6c00;
+    border: 1px solid rgba(239, 108, 0, 0.3);
+}
+
+.lepost-status-draft {
+    background: rgba(123, 31, 162, 0.1);
+    color: #7b1fa2;
+    border: 1px solid rgba(123, 31, 162, 0.3);
+}
+
+/* ==========================================================================
+   Form Enhancements
+   ========================================================================== */
+
+.lepost-form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    align-items: flex-start;
+}
+
+.lepost-form-column {
+    flex: 1;
+}
+
+.lepost-form-column.narrow {
+    flex: 0 0 200px;
+}
+
+.lepost-form-section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--lepost-border-color);
+}
+
+.lepost-form-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.lepost-help-text {
+    color: var(--lepost-text-light);
+    font-style: italic;
+    margin-top: 5px;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/* Enhanced form inputs */
+.lepost-admin input[type="text"],
+.lepost-admin input[type="email"],
+.lepost-admin input[type="url"],
+.lepost-admin input[type="password"],
+.lepost-admin textarea,
+.lepost-admin select {
+    border: 1px solid var(--lepost-border-color);
+    border-radius: var(--lepost-border-radius);
+    transition: var(--lepost-transition);
+}
+
+.lepost-admin input[type="text"]:focus,
+.lepost-admin input[type="email"]:focus,
+.lepost-admin input[type="url"]:focus,
+.lepost-admin input[type="password"]:focus,
+.lepost-admin textarea:focus,
+.lepost-admin select:focus {
+    border-color: var(--lepost-primary-color);
+    box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.1);
+    outline: none;
+}
+
+/* Progress Indicators */
+.lepost-progress-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    backdrop-filter: blur(2px);
+}
+
+.lepost-progress-content {
+    text-align: center;
+    background: var(--lepost-card-background);
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--lepost-border-color);
+    max-width: 400px;
+}
+
+.lepost-progress-content h3 {
+    margin-top: 0;
+    color: var(--lepost-text-color);
+}
+
+/* ==========================================================================
+   Performance Optimizations
+   ========================================================================== */
+
+/* Reduce repaints and reflows */
+.lepost-admin * {
+    box-sizing: border-box;
+}
+
+/* GPU acceleration for animations */
+.lepost-dashboard-card,
+.lepost-action-buttons .button,
+.lepost-status-badge {
+    will-change: transform;
+}
+
+/* Optimize font rendering */
+.lepost-admin {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+@media (max-width: 1200px) {
+    .lepost-dashboard-cards {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+}
+
+@media (max-width: 782px) {
+    .lepost-dashboard-cards {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .lepost-dashboard-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+        padding: 20px 15px;
+    }
+    
+    .lepost-dashboard-card-icon {
+        font-size: 36px;
+    }
+    
+    .lepost-dashboard-card-value {
+        font-size: 28px;
+    }
+    
+    .lepost-action-buttons {
+        flex-direction: column;
+    }
+    
+    .lepost-form-row {
+        flex-direction: column;
+    }
+    
+    .lepost-submit-actions {
+        flex-direction: column;
+    }
+    
+    .lepost-selection-controls {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .lepost-admin .card {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .lepost-dashboard-card-value {
+        font-size: 24px;
+    }
+    
+    .lepost-dashboard-card-icon {
+        font-size: 30px;
+    }
+    
+    .lepost-no-ideas-actions {
+        flex-direction: column;
+    }
+    
+    .lepost-progress-content {
+        padding: 30px 20px;
+        margin: 20px;
+    }
+}
+
+/* ==========================================================================
+   Accessibility Enhancements
+   ========================================================================== */
+
+/* Focus indicators */
+.lepost-admin .button:focus,
+.lepost-admin a:focus {
+    outline: 2px solid var(--lepost-primary-color);
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --lepost-border-color: #000;
+        --lepost-text-light: #333;
+    }
+    
+    .lepost-admin .card {
+        border-width: 2px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .lepost-admin * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ==========================================================================
+   Utility Classes
+   ========================================================================== */
+
+.lepost-text-center {
+    text-align: center;
+}
+
+.lepost-text-right {
+    text-align: right;
+}
+
+.lepost-text-left {
+    text-align: left;
+}
+
+.lepost-mb-0 {
+    margin-bottom: 0 !important;
+}
+
+.lepost-mb-10 {
+    margin-bottom: 10px !important;
+}
+
+.lepost-mb-20 {
+    margin-bottom: 20px !important;
+}
+
+.lepost-mt-0 {
+    margin-top: 0 !important;
+}
+
+.lepost-mt-10 {
+    margin-top: 10px !important;
+}
+
+.lepost-mt-20 {
+    margin-top: 20px !important;
+}
+
+.lepost-p-0 {
+    padding: 0 !important;
+}
+
+.lepost-p-10 {
+    padding: 10px !important;
+}
+
+.lepost-p-20 {
+    padding: 20px !important;
+}
+
+.lepost-hidden {
+    display: none !important;
+}
+
+.lepost-visible {
+    display: block !important;
+}
+
+.lepost-flex {
+    display: flex !important;
+}
+
+.lepost-inline-flex {
+    display: inline-flex !important;
+}
+
+.lepost-grid {
+    display: grid !important;
+}
+
+.lepost-fade-in {
+    animation: lepost-fade-in 0.3s ease-in;
+}
+
+.lepost-slide-up {
+    animation: lepost-slide-up 0.3s ease-out;
+}
+
+@keyframes lepost-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes lepost-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================================================
+   WordPress Admin Integration
+   ========================================================================== */
+
+/* Ensure compatibility with WordPress admin styles */
+.lepost-admin .wp-list-table {
+    margin-top: 15px;
+    border: 1px solid var(--lepost-border-color);
+    border-radius: var(--lepost-border-radius);
+    overflow: hidden;
+}
+
+.lepost-admin .wp-list-table .column-primary {
+    width: 40%;
+}
+
+.lepost-admin .wp-list-table .column-date {
+    width: 15%;
+}
+
+.lepost-admin .wp-list-table .column-actions {
+    width: 20%;
+}
+
+.lepost-admin .wp-list-table th {
+    background: rgba(0, 115, 170, 0.05);
+    border-bottom: 1px solid var(--lepost-border-color);
+}
+
+.lepost-admin .wp-list-table tr:hover {
+    background: rgba(0, 115, 170, 0.02);
+}
+
+/* Button group styles */
+.lepost-button-group {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.lepost-button-group .button {
+    margin-right: 0;
+}
+
+/* Notice enhancements */
+.lepost-admin .notice {
+    margin: 15px 0;
+    border-radius: var(--lepost-border-radius);
+    border-left-width: 4px;
+}
+
+.lepost-admin .notice p {
+    margin: 0.5em 0;
+}
+
+.lepost-admin .notice.notice-success {
+    border-left-color: var(--lepost-success-color);
+}
+
+.lepost-admin .notice.notice-error {
+    border-left-color: var(--lepost-error-color);
+}
+
+.lepost-admin .notice.notice-warning {
+    border-left-color: var(--lepost-warning-color);
+}
+
+/* Loading states */
+.lepost-loading {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.lepost-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid var(--lepost-primary-color);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: lepost-spin 1s linear infinite;
+}
+
+@keyframes lepost-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* WordPress admin color scheme compatibility */
+.admin-color-blue .lepost-admin {
+    --lepost-primary-color: #096484;
+    --lepost-primary-hover: #07526c;
+}
+
+.admin-color-coffee .lepost-admin {
+    --lepost-primary-color: #46403c;
+    --lepost-primary-hover: #383330;
+}
+
+.admin-color-ectoplasm .lepost-admin {
+    --lepost-primary-color: #523f6d;
+    --lepost-primary-hover: #46365d;
+}
+
+.admin-color-midnight .lepost-admin {
+    --lepost-primary-color: #e14d43;
+    --lepost-primary-hover: #dd382d;
+}
+
+.admin-color-ocean .lepost-admin {
+    --lepost-primary-color: #627c83;
+    --lepost-primary-hover: #576e74;
+}
+
+.admin-color-sunrise .lepost-admin {
+    --lepost-primary-color: #dd823b;
+    --lepost-primary-hover: #d97426;
+} 

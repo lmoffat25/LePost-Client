@@ -88,7 +88,7 @@ add_action('update_option_auto_update_plugins', function($old_value, $new_value)
 
 // Ajouter un lien vers les paramètres dans la liste des plugins
 add_filter('plugin_action_links_' . plugin_basename(__FILE__), function($links) {
-    $settings_link = '<a href="' . admin_url('admin.php?page=lepost-client&tab=settings') . '">' . __('Paramètres', 'lepost-client') . '</a>';
+    $settings_link = '<a href="' . admin_url('admin.php?page=lepost-settings') . '">' . __('Paramètres', 'lepost-client') . '</a>';
     array_unshift($links, $settings_link);
     return $links;
 });

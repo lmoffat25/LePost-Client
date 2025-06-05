@@ -2,10 +2,7 @@
  * Scripts pour les onglets des paramètres LePost Client
  */
 jQuery(document).ready(function($) {
-    // Le contenu sera ajouté ici une fois le fichier tab-settings.php complet sera disponible.
-
     // Test de génération d'article (depuis l'onglet Contenu)
-    // lepost_settings_tabs_params est localisé par Admin.php et contient maintenant les clés pour cela
     if (typeof lepost_settings_tabs_params !== 'undefined' && lepost_settings_tabs_params.nonce_test_generation) {
         $('body').on('click', '#lepost-test-generation', function() {
             var subject = $('#test_subject').val();
@@ -30,7 +27,7 @@ jQuery(document).ready(function($) {
                 type: 'POST',
                 data: {
                     action: 'lepost_test_article_generation',
-                    nonce: lepost_settings_tabs_params.nonce_test_generation, // Updated to use the unified params object
+                    nonce: lepost_settings_tabs_params.nonce_test_generation,
                     subject: subject,
                     subject_explanation: explanation
                 },

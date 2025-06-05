@@ -216,18 +216,6 @@ class Admin {
 
         if ($current_page === $this->plugin_name || $current_page === 'lepost-client') { 
             switch ($current_tab) {
-                case 'dashboard':
-                    wp_enqueue_script($this->plugin_name . '-dashboard', LEPOST_CLIENT_PLUGIN_URL . 'assets/js/lepost-dashboard.js', array('jquery'), $this->version, true);
-                    wp_localize_script($this->plugin_name . '-dashboard', 'lepost_dashboard_params', array(
-                        'urls' => array(
-                            'ideas_page' => admin_url('admin.php?page=lepost-client&tab=ideas')
-                        ),
-                        'i18n' => array(
-                            'confirm_generate_article' => __('Voulez-vous générer un article à partir de cette idée?', 'lepost-client')
-                        )
-                    ));
-                    break;
-                
                 case 'settings':
                     wp_enqueue_script($this->plugin_name . '-settings-tabs', LEPOST_CLIENT_PLUGIN_URL . 'assets/js/lepost-settings-tabs.js', array('jquery'), $this->version, true);
                     wp_localize_script($this->plugin_name . '-settings-tabs', 'lepost_settings_tabs_params', array(

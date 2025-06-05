@@ -11,7 +11,8 @@
          */
         init: function() {
             this.setupGenerateIdeasLink();
-            this.setupGenerateArticleButtons();
+            // Suppression de setupGenerateArticleButtons() pour éviter les conflits
+            // La gestion des boutons de génération d'articles est maintenant dans lepost-ideas-manager.js
         },
 
         /**
@@ -24,24 +25,6 @@
                 // Si une modale de génération existe sur la page des idées, l'ouvrir via AJAX
                 const url = $(this).attr('href');
                 window.location.href = url;
-            });
-        },
-
-        /**
-         * Configuration des boutons de génération d'articles
-         */
-        setupGenerateArticleButtons: function() {
-            $('.lepost-generate-article').on('click', function(e) {
-                e.preventDefault();
-                
-                const ideeId = $(this).data('id');
-                if (!ideeId) return;
-                
-                const confirmation = confirm(lepost_dashboard.i18n.confirm_generate_article);
-                if (!confirmation) return;
-                
-                // Rediriger vers la page des idées avec le paramètre d'action
-                window.location.href = lepost_dashboard.urls.ideas_page + '&generate=' + ideeId;
             });
         }
     };

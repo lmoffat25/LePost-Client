@@ -212,6 +212,7 @@ class IdeasManager extends AbstractSettingsTab {
      * @since    1.0.0
      */
     public function enqueue_scripts() {
+        // Script principal du gestionnaire d'idées
         wp_enqueue_script(
             'lepost-ideas-manager',
             LEPOST_CLIENT_PLUGIN_URL . 'assets/js/lepost-ideas-manager.js',
@@ -233,7 +234,11 @@ class IdeasManager extends AbstractSettingsTab {
                 'confirm_generate' => __('Voulez-vous générer des idées avec ce thème ?', 'lepost-client'),
                 'no_ideas' => __('Aucune idée trouvée', 'lepost-client'),
                 'create_idea' => __('Créez ou générez de nouvelles idées.', 'lepost-client'),
-                'error_delete' => __('Erreur lors de la suppression.', 'lepost-client')
+                'error_delete' => __('Erreur lors de la suppression.', 'lepost-client'),
+                'idea_saved' => __('Idée sauvegardée avec succès.', 'lepost-client'),
+                'idea_updated' => __('Idée mise à jour avec succès.', 'lepost-client'),
+                'idea_deleted' => __('Idée supprimée avec succès.', 'lepost-client'),
+                'confirm_generate_article' => __('Voulez-vous générer un article à partir de cette idée ?', 'lepost-client')
             )
         ));
     }
